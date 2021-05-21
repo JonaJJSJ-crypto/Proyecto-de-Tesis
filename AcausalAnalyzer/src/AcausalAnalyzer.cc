@@ -77,11 +77,23 @@
 #include "FWCore/Common/interface/TriggerResultsByName.h"
 #include "FWCore/ParameterSet/interface/Registry.h"
 
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "FWCore/Utilities/interface/RegexMatch.h"
+
 #include <iostream>
+#include <cassert>
+#include <vector>
+#include <string>
+#include <iomanip>
+#include <boost/foreach.hpp>
 
 const static std::vector<std::string> interestingTriggers = {
-      "HLT_HT400_Ele60_CaloIdL_TkrIdt",
-      "HLT_HT450_Ele60_CaloIdL_TkrIdt",
+/*      "HLT_HT400_Ele60_CaloIdL_TkrIdt",
+      "HLT_HT450_Ele60_CaloIdL_TkrIdt",*/
+      "HLT_DoubleEle45_CaloIdL",
+
 };
 
 template <typename T>
@@ -139,6 +151,31 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
 
 
    private:
+
+
+      // from HLTEventAnalyzerAOD.h
+      /// module config parameters
+      std::string   processName_;
+      edm::InputTag triggerResultsTag_;
+      edm::InputTag triggerEventTag_;
+    /// HLT trigger names
+    edm::ParameterSetID triggerNamesID_;
+
+      // additional class data memebers
+      // these are actually the containers where we will store
+      // the trigger information
+      edm::Handle<edm::TriggerResults>   triggerResultsHandle_;
+      edm::Handle<trigger::TriggerEvent> triggerEventHandle_;
+      HLTConfigProvider hltConfig_;
+
+      //inspired by https://github.com/cms-sw/cmssw/blob/CMSSW_5_3_X/HLTrigger/HLTfilters/interface/HLTHighLevel.h
+      // input patterns that will be expanded into trigger names
+      std::vector<std::string>  HLTPatterns_;
+
+    /// list of required HLT triggers by HLT name
+      std::vector<std::string>  HLTPathsByName_;
+
+
       virtual void beginJob() ;
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
@@ -222,8 +259,15 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-AcausalAnalyzer::AcausalAnalyzer(const edm::ParameterSet& iConfig)
+AcausalAnalyzer::AcausalAnalyzer(const edm::ParameterSet &iConfig)
      : isData(iConfig.getParameter<bool>("isData"))
+
+/*processName_("HLT")
+triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
+triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
+triggerNamesID_(),
+HLTPatterns_(iConfig.getParameter<std::vector<std::string> >("triggerPatterns")),
+HLTPathsByName_()*/
 {
    //now do what ever initialization is needed
   fs = new TFile("EleInfo.root","RECREATE");
@@ -301,13 +345,60 @@ AcausalAnalyzer::~AcausalAnalyzer()
 //
 
 // ------------ method called for each event  ------------
-void
-AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
    using namespace reco;
    using namespace std;
 
+/*
+
+   // Get event products: 
+   // In the following, the code is trying to access the information 
+   // from the ROOT files and point the containers (that we created), 
+   // namely triggerResultsHandle_ and triggerEVentHandle_, 
+   // to the correct "address", given at configuration time 
+   // and assigned to triggerResultsTag_ and triggerEventTag_
+ 
+   // After that, a simple sanity check is done.
+ 
+   iEvent.getByLabel(triggerResultsTag_,triggerResultsHandle_);
+   if (!triggerResultsHandle_.isValid()) {
+     cout << "Error in getting TriggerResults product from Event!" << endl;
+     return;
+   }
+   iEvent.getByLabel(triggerEventTag_,triggerEventHandle_);
+   if (!triggerEventHandle_.isValid()) {
+     cout << "Error in getting TriggerEvent product from Event!" << endl;
+     return;
+   }
+   // sanity check
+   assert(triggerResultsHandle_->size()==hltConfig_.size());
+
+   //Inspired in https://github.com/cms-sw/cmssw/blob/CMSSW_5_3_X/HLTrigger/HLTfilters/src/HLTHighLevel.cc
+   // init the TriggerNames with the TriggerResults
+  const edm::TriggerNames & triggerNames = iEvent.triggerNames(*triggerResultsHandle_);
+  bool config_changed = false;
+  if (triggerNamesID_ != triggerNames.parameterSetID()) {
+    triggerNamesID_ = triggerNames.parameterSetID();
+    config_changed = true;
+  }
+  // (re)run the initialization of the container with the trigger patterns 
+  // - this is the first event 
+  // - or the HLT table has changed 
+  if (config_changed) {
+      initPattern(*triggerResultsHandle_, iSetup, triggerNames);  
+  }
+  
+
+   //Loop over all triggers in the pattern
+  unsigned int n = HLTPathsByName_.size();
+   for (unsigned int i=0; i!=n; ++i) {
+       analyzeSimplePrescales(iEvent,iSetup,HLTPathsByName_[i]);
+   }
+
+
+*/
   // Event information
   value_run = iEvent.run();
   value_lumi_block = iEvent.luminosityBlock();
@@ -320,6 +411,11 @@ AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   auto triggerParams = psetRegistry->getMapped(trigger->parameterSetID());
   TriggerNames triggerNames(*triggerParams);
   TriggerResultsByName triggerByName(&(*trigger), &triggerNames);
+
+
+
+
+
   for (size_t i = 0; i < interestingTriggers.size(); i++) {
     value_trig[i] = false;
   }
@@ -329,17 +425,27 @@ AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     for (size_t j = 0; j < interestingTriggers.size(); j++) {
       const auto interest = interestingTriggers[j];
       if (name.find(interest) == 0) {
+        cout<<"interes "<<name.find(interest)<<endl;
         const auto substr = name.substr(interest.length(), 2);
         if (substr.compare("_v") == 0) {
+          cout<<"compare "<<substr.compare("_v")<<endl;
           const auto status = triggerByName.state(name);
+            cout<<"status "<<status<<endl;
+            cout<<"nombre "<<names[i]<<endl;
+            auto pathName = names[i];
+            cout<<"pre  "<<hltConfig_.prescaleValue(iEvent,iSetup,pathName)<<endl;      
           if (status == 1) {
             value_trig[j] = true;
+            cout<<"status "<<status<<endl;
+            cout<<"nombre "<<names[i]<<endl;
             break;
           }
         }
       }
     }
   }
+
+
   // Vertex
   Handle<VertexCollection> vertices;
   iEvent.getByLabel(InputTag("offlinePrimaryVertices"), vertices);
@@ -483,8 +589,21 @@ AcausalAnalyzer::endJob()
 
 // ------------ method called when starting to processes a run  ------------
 void 
-AcausalAnalyzer::beginRun(edm::Run const&, edm::EventSetup const&)
+AcausalAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
+
+    using namespace std;
+    using namespace edm;
+    processName_="HLT";
+    bool changed(true);
+    hltConfig_.init(iRun,iSetup,processName_,changed);
+    
+    if (changed)
+    {
+        cout<<"HLTConfig has changed . . . "<<endl;
+        
+    }
+
 }
 
 // ------------ method called when ending the processing of a run  ------------
