@@ -93,7 +93,7 @@ const static std::vector<std::string> interestingTriggers = {
 /*      "HLT_HT400_Ele60_CaloIdL_TkrIdt",
       "HLT_HT450_Ele60_CaloIdL_TkrIdt",*/
       "HLT_DoubleEle45_CaloIdL",
-
+      "HLT_Ele8",
 };
 
 template <typename T>
@@ -198,7 +198,8 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
 
   // Trigger
   const static int max_trig = 1000;
-  bool value_trig[max_trig];
+  int value_trig[max_trig];
+  float prescale_trig[max_trig];
 
   // Vertices
   int value_ve_n;
@@ -262,12 +263,12 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
 AcausalAnalyzer::AcausalAnalyzer(const edm::ParameterSet &iConfig)
      : isData(iConfig.getParameter<bool>("isData"))
 
-/*processName_("HLT")
-triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
-triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
-triggerNamesID_(),
-HLTPatterns_(iConfig.getParameter<std::vector<std::string> >("triggerPatterns")),
-HLTPathsByName_()*/
+/*       processName_("HLT"),
+       triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
+       triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
+       triggerNamesID_(),
+       HLTPatterns_(iConfig.getParameter<std::vector<std::string> >("triggerPatterns")),
+       HLTPathsByName_()*/
 {
    //now do what ever initialization is needed
   fs = new TFile("EleInfo.root","RECREATE");
@@ -281,7 +282,8 @@ HLTPathsByName_()*/
 
   // Trigger
   for(size_t i = 0; i < interestingTriggers.size(); i++) {
-    tree->Branch(interestingTriggers[i].c_str(), value_trig + i, (interestingTriggers[i] + "/O").c_str());
+    tree->Branch(interestingTriggers[i].c_str(), value_trig + i, (interestingTriggers[i] + "/i").c_str());
+    tree->Branch((interestingTriggers[i]+"_ps").c_str(), prescale_trig + i, (interestingTriggers[i]+"_ps"+"/F").c_str());
   }
 
   // Vertices
@@ -417,7 +419,8 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 
   for (size_t i = 0; i < interestingTriggers.size(); i++) {
-    value_trig[i] = false;
+    value_trig[i] = 0;
+    prescale_trig[i] = 0;
   }
   const auto names = triggerByName.triggerNames();
   for (size_t i = 0; i < names.size(); i++) {
@@ -425,17 +428,20 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     for (size_t j = 0; j < interestingTriggers.size(); j++) {
       const auto interest = interestingTriggers[j];
       if (name.find(interest) == 0) {
-        cout<<"interes "<<name.find(interest)<<endl;
         const auto substr = name.substr(interest.length(), 2);
         if (substr.compare("_v") == 0) {
-          cout<<"compare "<<substr.compare("_v")<<endl;
           const auto status = triggerByName.state(name);
+
             cout<<"status "<<status<<endl;
             cout<<"nombre "<<names[i]<<endl;
             auto pathName = names[i];
-            cout<<"pre  "<<hltConfig_.prescaleValue(iEvent,iSetup,pathName)<<endl;      
+            const std::pair<int,int> prescales(hltConfig_.prescaleValues(iEvent,iSetup,pathName));
+            cout<<"pre  "<<prescales.first<<","<<prescales.second<<endl;      
+            prescale_trig[j] = prescales.first/prescales.second;
+            value_trig[j] = status;
+
           if (status == 1) {
-            value_trig[j] = true;
+            value_trig[j] = 1;
             cout<<"status "<<status<<endl;
             cout<<"nombre "<<names[i]<<endl;
             break;
