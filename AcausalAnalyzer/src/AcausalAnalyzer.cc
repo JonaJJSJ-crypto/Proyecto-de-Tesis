@@ -270,6 +270,7 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 AcausalAnalyzer::AcausalAnalyzer(const edm::ParameterSet &iConfig):
+trackTags_(iConfig.getUntrackedParameter<edm::InputTag>("tracks"))
 isData(iConfig.getParameter<bool>("isData")),
 processName_(iConfig.getParameter<std::string>("processName")),
 triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
@@ -277,7 +278,7 @@ triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
 triggerNamesID_(),
 HLTPatterns_(iConfig.getParameter<std::vector<std::string> >("triggerPatterns")),
 HLTPathsByName_(),
-trackTags_(iConfig.getUntrackedParameter<edm::InputTag>("tracks"))
+isData(iConfig.getParameter<bool>("isData")),
 {
    //now do what ever initialization is needed
   fs = new TFile("EleInfo.root","RECREATE");
