@@ -84,7 +84,8 @@
 
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
-#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/print.h"
+
 #include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
@@ -460,6 +461,24 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
   }
 
+//Tracks
+  Handle<TrackCollection> tracks;
+  iEvent.getByLabel(trackTags_,tracks);
+/*  int matchedTrack[tracks->size()];
+  for (int i = 0; i<(int)tracks->size(); i++)
+  {
+	matchedTrack[i] = 0;
+  }*/
+  cout<<"number tracks 	"<<tracks->size()<<endl; 
+  for(TrackCollection::const_iterator itTrack = tracks->begin();
+      itTrack != tracks->end();
+      ++itTrack)
+  {
+    if(itTrack->pt() > 5)
+    {
+     cout<<"vert "<<itTrack->pt()<<endl;
+    }
+  }
 
   // Vertex
   Handle<VertexCollection> vertices;
@@ -479,7 +498,7 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   std::vector<GsfElectron> selectedElectrons;
   for (auto it = electrons->begin(); it != electrons->end(); it++) {
     if (it->pt() > el_min_pt) {
-      //std::cout<<it->pt()<<"================================AQUI===========================\n ";
+      std::cout<<it->pt()<<"================================AQUI===========================\n ";
       selectedElectrons.emplace_back(*it);
       value_el_pt[value_el_n] = it->pt();
       value_el_eta[value_el_n] = it->eta();
