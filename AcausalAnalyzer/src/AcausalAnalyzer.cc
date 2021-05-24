@@ -82,6 +82,13 @@
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "FWCore/Utilities/interface/RegexMatch.h"
 
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+
 #include <iostream>
 #include <cassert>
 #include <vector>
@@ -151,6 +158,8 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
 
 
    private:
+//tracks
+      edm::InputTag trackTags_;
 
 
       // from HLTEventAnalyzerAOD.h
@@ -260,15 +269,15 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-AcausalAnalyzer::AcausalAnalyzer(const edm::ParameterSet &iConfig)
-     : isData(iConfig.getParameter<bool>("isData"))
-
-/*       processName_("HLT"),
-       triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
-       triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
-       triggerNamesID_(),
-       HLTPatterns_(iConfig.getParameter<std::vector<std::string> >("triggerPatterns")),
-       HLTPathsByName_()*/
+AcausalAnalyzer::AcausalAnalyzer(const edm::ParameterSet &iConfig):
+isData(iConfig.getParameter<bool>("isData")),
+processName_(iConfig.getParameter<std::string>("processName")),
+triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResults")),
+triggerEventTag_(iConfig.getParameter<edm::InputTag>("triggerEvent")),
+triggerNamesID_(),
+HLTPatterns_(iConfig.getParameter<std::vector<std::string> >("triggerPatterns")),
+HLTPathsByName_(),
+trackTags_(iConfig.getUntrackedParameter<edm::InputTag>("tracks"))
 {
    //now do what ever initialization is needed
   fs = new TFile("EleInfo.root","RECREATE");
