@@ -313,7 +313,7 @@ isData(iConfig.getParameter<bool>("isData"))
   tree->Branch("PV_y", &value_ve_y, "PV_y/F");
   tree->Branch("PV_z", &value_ve_z, "PV_z/F");
 //tracks
-  tree->Branchs("Track_pt", trk_pt, "Track_pt/F");
+  tree->Branch("Track_pt", trk_pt, "Track_pt/F");
  // Electrons
   tree->Branch("nElectron", &value_el_n, "nElectron/i");
   tree->Branch("Electron_pt", value_el_pt, "Electron_pt[nElectron]/F");
