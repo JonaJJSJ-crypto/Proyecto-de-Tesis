@@ -226,6 +226,8 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
   float value_ve_y;
   float value_ve_z;
 
+//tracks
+	float trk_pt[1000];
 
   // Electrons
   const static int max_el = 1000;
@@ -310,7 +312,8 @@ isData(iConfig.getParameter<bool>("isData"))
   tree->Branch("PV_x", &value_ve_x, "PV_x/F");
   tree->Branch("PV_y", &value_ve_y, "PV_y/F");
   tree->Branch("PV_z", &value_ve_z, "PV_z/F");
-
+//tracks
+  tree->Branchs("Track_pt", trk_pt, "Track_pt/F")
  // Electrons
   tree->Branch("nElectron", &value_el_n, "nElectron/i");
   tree->Branch("Electron_pt", value_el_pt, "Electron_pt[nElectron]/F");
@@ -419,6 +422,24 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       }
     }
   }
+	//tracks
+Handle<TrackCollection> tracks;
+iEvent.getByLabel(trackTags_,tracks);
+int trackc=0;
+for(TrackCollection::const_iterator itTrack = tracks->begin();
+      itTrack != tracks->end();
+      ++itTrack)
+  {
+    if(itTrack->pt() > 5)
+    {
+    	cout<<"vert "<<itTrack->pt()<<endl;
+	trk_pt[trackc]=itTrack->pt();    
+    }
+	trackc++;  
+}
+	
+	
+/*
 //Matching triggers and tracks
 Handle<reco::VertexCollection> vertHand;
 Handle<reco::BeamSpot> beamSpotHandle;
@@ -446,8 +467,7 @@ if ( beamSpotHandle.isValid() )
 	
 bool standardCuts = cmsStandardCuts(iEvent, iSetup);
 	
-  Handle<TrackCollection> tracks;
-  iEvent.getByLabel(trackTags_,tracks);
+
   int matchedTrack[tracks->size()];
   for (int i = 0; i<(int)tracks->size(); i++)
   {
@@ -469,7 +489,7 @@ bool standardCuts = cmsStandardCuts(iEvent, iSetup);
     }
   }
 bool passTrig = false;	
-if(status==1){ passTrig=true}
+if(status==1){ passTrig=true;}
 passTrig=true;
 string filterName = "hltDoubleEG38HEVTDoubleFilter";
 
@@ -492,7 +512,7 @@ trigger::size_type e_filterIndex = trigEvent->filterIndex(edm::InputTag(e_filter
  * standardCuts requirements are satisfied, that the double photon 
  * trigger was activated and that a valid beamspot object was created
  * int the event.
- * **/     
+ * **/   /*  
 if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 {
  int i = 0;
@@ -627,7 +647,7 @@ for(TrackCollection::const_iterator itTrack1 = tracks->begin();
 	   }
    }
 i++;
-}
+}*/
 	
 	
 	
