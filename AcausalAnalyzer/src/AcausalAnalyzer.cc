@@ -194,7 +194,16 @@ class AcausalAnalyzer : public edm::EDAnalyzer {
       virtual void endRun(edm::Run const&, edm::EventSetup const&);
       virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
-
+	
+     bool cmsStandardCuts(const edm::Event&, const edm::EventSetup&);
+     bool matchingCuts( bool , double , int , int , double, double, double);
+     double deltaR(double , double , double, double);
+     double conePt(int , int , double , double , int ,const edm::Event& , const edm::EventSetup& );
+     double mCos(double , double , double , double  );
+     double mTheta(double , double , double , double );
+     double invMass(double , double , double , double  , double ,  double );
+     double dotProduct(double , double , double , double );
+     bool impactParameterCut(reco::TrackCollection::const_iterator, reco::TrackCollection::const_iterator, reco::BeamSpot );
       bool providesGoodLumisection(const edm::Event &iEvent);
       bool isData;
 
@@ -572,6 +581,205 @@ AcausalAnalyzer::endJob()
 }
 
 // ------------ method called when starting to processes a run  ------------
+
+bool
+
+AcausalAnalyzer::cmsStandardCuts(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+{
+ bool ret = false;
+ int disp = 0;
+ int numHighPurity = 0;
+ int numTracks = 0;
+
+ double purityFrac = 0.0;
+ using namespace edm;
+ using namespace reco;
+   Handle<reco::VertexCollection> vertHand;
+   iEvent.getByLabel( "offlinePrimaryVertices",vertHand);
+   
+   Handle<TrackCollection> tracks;
+   iEvent.getByLabel(trackTags_,tracks);
+   
+   for(reco::VertexCollection::const_iterator itVert = vertHand->begin();
+       itVert != vertHand->begin()+1 && itVert != vertHand->end();
+       ++itVert)
+       {
+		  
+		    for(reco::Vertex::trackRef_iterator itTrack = itVert->tracks_begin();
+       itTrack != itVert->tracks_end();
+       ++itTrack)
+           {
+		        
+		 double tx = (**itTrack).vx();
+	     double ty = (**itTrack).vy();
+		 double tz = (**itTrack).vz();
+		 double tr = sqrt(tx*tx +ty*ty);
+		 if ( (tr < 2 )&&(tz < 24) )
+		 {
+			 disp ++;
+		 }
+ 
+    	   }
+		    
+	   }
+	 
+	   
+	   for(TrackCollection::const_iterator itTrack = tracks->begin();
+       itTrack != tracks->end();                      
+       ++itTrack) 
+       {   
+		  
+		   numTracks ++;
+		   
+		   if (itTrack->quality(reco::Track::highPurity))
+		   {
+			   numHighPurity++;
+		   }
+		   
+	   }
+	   
+	   purityFrac = (double)numHighPurity/numTracks;
+	   if (numTracks<10)
+	   {
+		   purityFrac = 1;
+	   }
+	   
+	   if(disp >=4 && purityFrac >= 0.25)
+	   {
+		   ret = true;
+	   }
+	   
+	
+	
+	return ret;
+	
+
+}
+
+
+
+
+bool 
+{
+	bool ret = false;
+	
+	
+		
+	  if(purity && pt > 41 && hits >= 6   && eta < 2  && hits3D >1)
+	  if(true)
+	  
+	  {
+		  ret = true;
+
+	  }	
+	 
+	  
+
+	
+	return ret;
+}
+double 
+AcausalAnalyzer::deltaR(double obj1Phi, double obj1Eta, double obj2Phi, double obj2Eta)
+{
+	double dPhi = obj1Phi - obj2Phi;
+	if (abs(dPhi)>3.1415/2)
+	{
+		dPhi =  3.1415 -dPhi;
+	}
+	double dEta = obj1Eta - obj2Eta;
+	double dR = sqrt(dPhi*dPhi + dEta*dEta);
+	return dR;
+}
+double 
+AcausalAnalyzer::conePt(int forbiddenIndex1, int forbiddenIndex2, double eta, double phi, int numTracks,const edm::Event& iEvent, const edm::EventSetup& iSetup )
+{  
+	using namespace edm;
+	using namespace reco;
+    Handle<TrackCollection> tracks;
+   iEvent.getByLabel(trackTags_,tracks);
+    int i =0;
+	double sumPt = 0.0;
+	for(TrackCollection::const_iterator itTrack = tracks->begin();
+       itTrack != tracks->end();                      
+       ++itTrack) 
+	{
+		if(deltaR(phi, eta, itTrack->phi(), itTrack->eta()) < 0.3 && deltaR(phi, eta, itTrack->phi(), itTrack->eta()) > 0.03 && i != forbiddenIndex1 && i != forbiddenIndex2)
+		{
+			sumPt = itTrack->pt() +sumPt;
+			i++;
+		}
+	}
+	
+	return sumPt;
+}
+double 
+AcausalAnalyzer::mCos(double phi1, double eta1, double phi2, double eta2 )
+{double cosAlpha = cos(eta1)*cos(phi1)*cos(eta2)*cos(phi2) + cos(eta1)*sin(phi1)*cos(eta2)*sin(phi2) + sin(eta1)*cos(eta2);
+	
+	return cosAlpha;
+}
+double 
+AcausalAnalyzer::mTheta(double ax, double ay, double bx, double by)
+{
+	double cosAlpha = ax*bx + ay*by;
+	double theta;
+	cosAlpha = cosAlpha/(sqrt(ax*ax+ay*ay)*sqrt(bx*bx+by*by));
+	//std::cout<<"cosAlpha: "<<cosAlpha<<std::endl;
+	theta  = acos(cosAlpha);
+	if (theta > 3.1514)
+	{
+		theta =  2*3.1514-theta;
+	}
+	return theta;
+}
+double 
+AcausalAnalyzer::invMass(double px1, double py1, double pz1, double px2 , double py2,  double pz2)
+{
+  double E1 =  sqrt(px1*px1 + py1*py1 + pz1*pz1);  // asummes rest mass energy to be negligible
+  double E2 =  sqrt(px2*px2 + py2*py2 + pz2*pz2);
+  
+  double E = E1+E2;
+  double px = px1 + px2;
+  double py = py1 + py2;
+  double pz = pz1 + pz2;
+  double mass = sqrt(E*E - px*px - py*py - pz*pz);
+  
+  return mass;
+  
+  
+
+	
+}
+double
+AcausalAnalyzer::dotProduct(double x1, double y1 , double x2, double y2)
+{
+	double ret;
+	ret = x1*x2+y1*y2;
+	return ret;
+}
+bool
+AcausalAnalyzer::impactParameterCut(reco::TrackCollection::const_iterator it1, reco::TrackCollection::const_iterator it2, reco::BeamSpot beamSpot)
+{    
+	double dxy1, dxy1Err, dxy2, dxy2Err, sig1, sig2;
+	bool ret = false;
+	dxy1 = it1->dxy(beamSpot);
+	dxy2 = it2->dxy(beamSpot);
+	dxy1Err = it1->dxyError();
+	dxy2Err = it2->dxyError();
+	
+	sig1 = dxy1/dxy1Err;
+	sig2 = dxy2/dxy2Err;
+	
+	if (sig1 > 2 && sig2 > 2)
+	{
+		ret = true;
+	}
+	
+	
+	return ret;
+}
+
+
 void 
 AcausalAnalyzer::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup)
 {
