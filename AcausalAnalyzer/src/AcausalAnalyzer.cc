@@ -419,15 +419,45 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       }
     }
   }
+//Matching triggers and tracks
+Handle<reco::VertexCollection> vertHand;
+Handle<reco::BeamSpot> beamSpotHandle;
+Handle<reco::TrackCollection> tks;
+ESHandle<TransientTrackBuilder> theB;
+iEvent.getByLabel( "offlinePrimaryVertices",vertHand);
+iEvent.getByLabel("offlineBeamSpot", beamSpotHandle);
+iEvent.getByLabel(trackTags_, tks);
 
-//Tracks
+reco::BeamSpot beamSpot;
+// get beamspot coordinates
+double beamX = 0;
+double beamY = 0;
+double beamXErr = 0;
+double beamYErr = 0;
+if ( beamSpotHandle.isValid() )
+{
+    beamSpot = *beamSpotHandle; 
+    beamX = beamSpot.x0();
+    beamY = beamSpot.y0();
+    beamXErr = beamSpot.x0Error();
+    beamYErr = beamSpot.y0Error();
+    if(beamX && beamY && beamXErr && beamYErr){}
+}
+	
+bool standardCuts = cmsStandardCuts(iEvent, iSetup);
+	
   Handle<TrackCollection> tracks;
   iEvent.getByLabel(trackTags_,tracks);
-/*  int matchedTrack[tracks->size()];
+  int matchedTrack[tracks->size()];
   for (int i = 0; i<(int)tracks->size(); i++)
   {
 	matchedTrack[i] = 0;
-  }*/
+  }
+	
+	
+	
+	
+	
   cout<<"number tracks 	"<<tracks->size()<<endl; 
   for(TrackCollection::const_iterator itTrack = tracks->begin();
       itTrack != tracks->end();
@@ -438,6 +468,149 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
      cout<<"vert "<<itTrack->pt()<<endl;
     }
   }
+	
+/** the analysis section of the code begins. First we check that the 
+ * standardCuts requirements are satisfied, that the double photon 
+ * trigger was activated and that a valid beamspot object was created
+ * int the event.
+ * **/     
+if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
+{
+ int i = 0;
+ for(TrackCollection::const_iterator itTrack = tracks->begin();
+       itTrack != tracks->end();                      
+       ++itTrack) 
+       {
+		  for(trigger::Keys::const_iterator keyIt=trigKeys.begin();keyIt!=trigKeys.end();++keyIt)
+		  {
+			   const trigger::TriggerObject& obj = e_trigObjColl[*keyIt];
+			 
+			   bool lepMatchCut =matchingCuts( itTrack->quality(reco::Track::highPurity)  , itTrack->pt() , itTrack->hitPattern().numberOfValidTrackerHits(),itTrack->hitPattern().numberOfValidPixelHits(), itTrack->eta(), itTrack->dxy(beamSpot), itTrack->dxyError());
+		
+		  
+		   if (lepMatchCut)
+		   { 
+			    if(deltaR(itTrack->phi(), itTrack->eta(), obj.phi(), obj.eta())< 0.1 )
+			   {  
+				   matchedTrack[i] = 1;     
+			   }
+			   
+		   } 
+			  
+		  }
+		  i++;
+	   }
+}
+}
+
+//TrackReco
+
+int  i =0;
+for(TrackCollection::const_iterator itTrack1 = tracks->begin();
+       itTrack1 != tracks->end();                      
+       ++itTrack1) 
+{
+	if (itTrack1->charge()==1 && matchedTrack[i] == 1 ){
+	int	j=0;
+	for(TrackCollection::const_iterator itTrack2 = tracks->begin();
+       itTrack2 != tracks->end();                      
+       ++itTrack2) 
+       {
+		   if(itTrack2->charge() ==-1 && matchedTrack[j] ==1    )
+		   {  
+			   
+ // Secondary vertex is reconstructed
+			   // get RECO tracks from the event
+					
+					
+                    KalmanVertexFitter fitter;
+					//get the builder:
+					
+					iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
+					//do the conversion:
+					std::vector<reco::TransientTrack> t_tks = (*theB).build(tks);
+					
+				   
+				   std::vector<reco::TransientTrack> trackVec;
+                    
+				   if ( (int)t_tks.size()>2){
+
+				   trackVec.push_back(t_tks[i]);
+					
+
+				   trackVec.push_back(t_tks[j]); 
+				   TransientVertex myVertex = fitter.vertex(trackVec);
+				  
+		 
+				  
+              if (myVertex.isValid() && myVertex.normalisedChiSquared() < 5)
+					 {
+			    double secVert_x =(double)myVertex.position().x();
+			    double secVert_y =(double)myVertex.position().y();
+			    double conePt_var=conePt(i , j, itTrack1->eta(), itTrack1->phi(),  tracks->size(), iEvent,iSetup);
+			    //double cosAlpha = mCos(itTrack1->phi(), itTrack1->eta(), itTrack2->phi(), itTrack2->eta());
+			    double theta = mTheta(itTrack1->px()+itTrack2->px(), itTrack1->py()+itTrack2->py(),secVert_x -vertex_x,  secVert_y-vertex_y);
+			    bool IPC = impactParameterCut(itTrack1, itTrack2, beamSpot);
+			    double secVertErrx = myVertex.positionError().cxx();
+			    double secVertErry = myVertex.positionError().cyy();
+				double tdl_x = secVert_x - vertex_x;
+				double tdl_y = secVert_y - vertex_y;
+				double tdl = sqrt(tdl_x*tdl_x + tdl_y*tdl_y);
+				double tdl_errx = secVertErrx + vertex_xError;
+				double tdl_erry = secVertErry + vertex_yError;
+				//double tdl_err = sqrt(tdl_errx*tdl_errx + tdl_erry*tdl_erry);
+				double difx = (secVert_x)/(sqrt((secVert_x*secVert_x)+(secVert_y*secVert_y)));
+				double dify = (secVert_y)/(sqrt((secVert_x*secVert_x)+(secVert_y*secVert_y)));
+				double tot_variance = difx*difx*tdl_errx +dify*dify*tdl_erry; 
+				double tdl_err = sqrt(tot_variance);
+				double invariantMass;
+	
+			    invariantMass = invMass(itTrack1->px(), itTrack1->py(), itTrack1->pz(),itTrack2->px(), itTrack2->py(), itTrack2->pz());
+			    h_invMassLoose->Fill(invariantMass);
+			    
+			    if ((conePt_var < 4  && (theta < 0.8 )))
+					
+					{
+			    
+				         h_invMass->Fill(invariantMass, prescale);
+	 
+				         double lxy_err = tdl/(tdl_err);
+				         if (lxy_err > 20)
+				         {
+							 lxy_err = 19;
+					     }
+				         h_lxy_err->Fill(lxy_err, prescale);
+				         
+				    //with lifetime related cuts
+				         if (IPC && tdl/tdl_err > 5)
+				         {
+							// h_invMass_LC->Fill(invariantMass, prescale);
+						 }
+						 
+				    
+				 }
+				 if ((conePt_var < 4  && (theta >3.1514- 0.8 )))
+					
+					{
+				
+					   
+				
+					  
+		    
+				   }
+			   
+		   }
+		   }
+		   }
+		
+		j ++;   
+	   }
+   }
+i++;
+}
+	
+	
+	
 
   // Vertex
   Handle<VertexCollection> vertices;
