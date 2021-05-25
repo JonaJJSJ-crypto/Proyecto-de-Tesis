@@ -363,54 +363,7 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
    using namespace reco;
    using namespace std;
 
-/*
 
-   // Get event products: 
-   // In the following, the code is trying to access the information 
-   // from the ROOT files and point the containers (that we created), 
-   // namely triggerResultsHandle_ and triggerEVentHandle_, 
-   // to the correct "address", given at configuration time 
-   // and assigned to triggerResultsTag_ and triggerEventTag_
- 
-   // After that, a simple sanity check is done.
- 
-   iEvent.getByLabel(triggerResultsTag_,triggerResultsHandle_);
-   if (!triggerResultsHandle_.isValid()) {
-     cout << "Error in getting TriggerResults product from Event!" << endl;
-     return;
-   }
-   iEvent.getByLabel(triggerEventTag_,triggerEventHandle_);
-   if (!triggerEventHandle_.isValid()) {
-     cout << "Error in getting TriggerEvent product from Event!" << endl;
-     return;
-   }
-   // sanity check
-   assert(triggerResultsHandle_->size()==hltConfig_.size());
-
-   //Inspired in https://github.com/cms-sw/cmssw/blob/CMSSW_5_3_X/HLTrigger/HLTfilters/src/HLTHighLevel.cc
-   // init the TriggerNames with the TriggerResults
-  const edm::TriggerNames & triggerNames = iEvent.triggerNames(*triggerResultsHandle_);
-  bool config_changed = false;
-  if (triggerNamesID_ != triggerNames.parameterSetID()) {
-    triggerNamesID_ = triggerNames.parameterSetID();
-    config_changed = true;
-  }
-  // (re)run the initialization of the container with the trigger patterns 
-  // - this is the first event 
-  // - or the HLT table has changed 
-  if (config_changed) {
-      initPattern(*triggerResultsHandle_, iSetup, triggerNames);  
-  }
-  
-
-   //Loop over all triggers in the pattern
-  unsigned int n = HLTPathsByName_.size();
-   for (unsigned int i=0; i!=n; ++i) {
-       analyzeSimplePrescales(iEvent,iSetup,HLTPathsByName_[i]);
-   }
-
-
-*/
   // Event information
   value_run = iEvent.run();
   value_lumi_block = iEvent.luminosityBlock();
@@ -423,9 +376,6 @@ void AcausalAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   auto triggerParams = psetRegistry->getMapped(trigger->parameterSetID());
   TriggerNames triggerNames(*triggerParams);
   TriggerResultsByName triggerByName(&(*trigger), &triggerNames);
-
-
-
 
 
   for (size_t i = 0; i < interestingTriggers.size(); i++) {
