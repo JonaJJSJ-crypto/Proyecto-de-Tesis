@@ -650,7 +650,7 @@ AcausalAnalyzer::cmsStandardCuts(const edm::Event& iEvent, const edm::EventSetup
 	   }
 	   
 	
-	
+}	
 	return ret;
 	
 
