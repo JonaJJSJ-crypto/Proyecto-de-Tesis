@@ -504,6 +504,7 @@ if ((standardCuts && passTrig && beamSpotHandle.isValid()) )
 }
 
 //TrackReco
+filterName = "hltDoubleEG38HEVTDoubleFilter";
 
 int  i =0;
 for(TrackCollection::const_iterator itTrack1 = tracks->begin();
