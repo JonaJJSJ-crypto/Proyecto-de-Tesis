@@ -650,7 +650,7 @@ AcausalAnalyzer::cmsStandardCuts(const edm::Event& iEvent, const edm::EventSetup
 	   }
 	   
 	
-}	
+	
 	return ret;
 	
 
@@ -660,6 +660,7 @@ AcausalAnalyzer::cmsStandardCuts(const edm::Event& iEvent, const edm::EventSetup
 
 
 bool 
+AcausalAnalyzer::matchingCuts( bool purity, double pt, int hits, int hits3D, double eta, double dxy, double dxyError)
 {
 	bool ret = false;
 	
