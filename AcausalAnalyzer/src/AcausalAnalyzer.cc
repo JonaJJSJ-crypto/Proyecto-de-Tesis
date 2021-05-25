@@ -468,6 +468,25 @@ bool standardCuts = cmsStandardCuts(iEvent, iSetup);
      cout<<"vert "<<itTrack->pt()<<endl;
     }
   }
+bool passTrig = false;	
+if(status==1){ passTrig=true}
+passTrig=true;
+string filterName = "hltDoubleEG38HEVTDoubleFilter";
+
+std::string e_filterName(filterName);
+trigger::size_type e_filterIndex = trigEvent->filterIndex(edm::InputTag(e_filterName,"",trigEventTag.process())); 
+  
+ if(e_filterIndex<trigEvent->sizeFilters())
+ { 
+      const trigger::Keys& trigKeys = trigEvent->filterKeys(e_filterIndex);  
+      const trigger::TriggerObjectCollection & e_trigObjColl(trigEvent->getObjects());
+
+
+/** the analysis section of the code begins. First we check that the 
+ * standardCuts requirements are satisfied, that the double photon 
+ * trigger was activated and that a valid beamspot object was created
+ * int the event.
+ * **/  
 	
 /** the analysis section of the code begins. First we check that the 
  * standardCuts requirements are satisfied, that the double photon 
