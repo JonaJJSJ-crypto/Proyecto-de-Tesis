@@ -2,7 +2,7 @@
 (******                       This is the FeynRules mod-file for the Standard model                       ******)
 (******                                                                                                   ******)
 (******     Authors: N. Christensen, C. Duhr, B. Fuks                                                     ******)
-(******                                                                                                   ******)
+(******           Moded by J. Sánchez                                                                     ******)
 (****** Choose whether Feynman gauge is desired.                                                          ******)
 (****** If set to False, unitary gauge is assumed.                                                          ****)
 (****** Feynman gauge is especially useful for CalcHEP/CompHEP where the calculation is 10-100 times faster. ***)
@@ -15,12 +15,12 @@
 M$ModelName = "Standard Model";
 
 M$Information = {
-  Authors      -> {"N. Christensen", "C. Duhr", "B. Fuks"}, 
+  Authors      -> {"J.Sánchez"}, 
   Version      -> "1.4.7",
   Date         -> "28. 09. 2016",
-  Institutions -> {"Michigan State University", "Universite catholique de Louvain (CP3)", "IPHC Strasbourg / University of Strasbourg"},
-  Emails       -> {"neil@pa.msu.edu", "claude.duhr@uclouvain.be", "benjamin.fuks@cnrs.in2p3.fr"},
-  URLs         -> "http://feynrules.phys.ucl.ac.be/view/Main/StandardModel"
+  Institutions -> {"Universidad San Francisco de Quito"},
+  Emails       -> {"jjsanchezj@estud.usfq.edu.ec"},
+  URLs         -> "Pending"
 };
 
 FeynmanGauge = True;
