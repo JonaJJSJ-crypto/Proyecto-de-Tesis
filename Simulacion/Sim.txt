@@ -1,0 +1,8 @@
+Here will be the simulation:
+
+This simulations has one lw term mixing for electrons in the lagrangian using FeynRules.
+ 
+ 1.Using the eigen vector from the Mixing matrix proposed by Alvares et.al. I have chosen the mixing terms only containing the Doublet lw partner with the Doublet electron
+ 2.In the File SM.fr there has been defined the lwZ boson partner and the lwe partner for electron. 
+ 3.The lagrangian term consist of mixing described in Alvarez et.al. B1 and Table.II
+ 4. There been calculated the Feyman Rules for this Model Using ("WriteUFO[LSM, AddDecays -> True, Output -> "LWSMv2"]")
