@@ -761,11 +761,9 @@ LGhost := Block[{LGh1,LGhw,LGhs,LGhphi,mu, generators,gh,ghbar,Vectorize,phi1,ph
   togoldstones := {phi1 -> (GP + GPbar)/Sqrt[2], phi2 -> (-GP + GPbar)/(I Sqrt[2])};
   LGhphi=Plus@@Flatten[Table[-ghbar[[kkk]].gh[[lll]] Vectorize[generators[[kkk]].doublet0].Vectorize[generators[[lll]].(doublet+doublet0)],{kkk,4},{lll,4}]] /.togoldstones;
 
-LLW := Z[mu] (-0.5+sw2) ProjM.lwebar.Ga[mu].ProjM.lwe - lwZ[mu] (-0.5+sw2) ProjM.ebar.Ga[mu].ProjM.e
-	+ lwZ[mu] (-0.5+sw2) ProjMlwebar.Ga[mu].ProjM.lwe +
-	Z[mu] (sw2) ProjP.lwebar.Ga[mu].ProjP.lwe - lwZ[mu] (sw2) ProjP.ebar.Ga[mu].ProjP.e
-	+ lwZ[mu] (sw2) ProjP.lwebar.Ga[mu].ProjP.lwe -
-	(Z[mu]-lwZ[mu]) (0.5) ((Me/200) ebar.Ga[mu].ProjM.lwe + (Me/200)lwebar.Ga[mu].ProjM.e
+LLW := -Z[mu] ee/cw*(-0.5+sw2) ProjM.lwebar.Ga[mu].ProjM.lwe+
+	Z[mu] ee/cw*(sw2) ProjP.lwebar.Ga[mu].ProjP.lwe-
+	(Z[mu]) ee/cw*(0.5) ((Me/200) ebar.Ga[mu].ProjM.lwe + (Me/200)lwebar.Ga[mu].ProjM.e
 	- (Me/200) ebar.Ga[mu].ProjP.lwe - (Me/200) lwebar.Ga[mu].ProjP.e) ;
 
 ExpandIndices[ LGhs + If[FeynmanGauge, LGh1 + LGhw + LGhphi,0], FlavorExpand->SU2W]];
