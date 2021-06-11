@@ -45,6 +45,6 @@ else:
 gauge = [0, 1]
 
 
-__author__ = "N. Christensen, C. Duhr"
-__date__ = "02. 06. 2009"
-__version__= "1.3"
+__author__ = "J.SA~\[DownExclamation]nchez"
+__date__ = "28. 09. 2016"
+__version__= "1.4.7"

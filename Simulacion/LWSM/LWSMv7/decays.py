@@ -1,6 +1,6 @@
 # This file was automatically created by FeynRules 2.3.47
 # Mathematica version: 12.1.1 for Microsoft Windows (64-bit) (June 19, 2020)
-# Date: Wed 2 Jun 2021 12:59:09
+# Date: Mon 7 Jun 2021 04:23:17
 
 
 from object_library import all_decays, Decay
@@ -19,10 +19,9 @@ Decay_H = Decay(name = 'Decay_H',
                                   (P.W__minus__,P.W__plus__):'(((3*ee**4*vev**2)/(4.*sw**4) + (ee**4*MH**4*vev**2)/(16.*MW**4*sw**4) - (ee**4*MH**2*vev**2)/(4.*MW**2*sw**4))*cmath.sqrt(MH**4 - 4*MH**2*MW**2))/(16.*cmath.pi*abs(MH)**3)',
                                   (P.Z,P.Z):'(((9*ee**4*vev**2)/2. + (3*ee**4*MH**4*vev**2)/(8.*MZ**4) - (3*ee**4*MH**2*vev**2)/(2.*MZ**2) + (3*cw**4*ee**4*vev**2)/(4.*sw**4) + (cw**4*ee**4*MH**4*vev**2)/(16.*MZ**4*sw**4) - (cw**4*ee**4*MH**2*vev**2)/(4.*MZ**2*sw**4) + (3*cw**2*ee**4*vev**2)/sw**2 + (cw**2*ee**4*MH**4*vev**2)/(4.*MZ**4*sw**2) - (cw**2*ee**4*MH**2*vev**2)/(MZ**2*sw**2) + (3*ee**4*sw**2*vev**2)/cw**2 + (ee**4*MH**4*sw**2*vev**2)/(4.*cw**2*MZ**4) - (ee**4*MH**2*sw**2*vev**2)/(cw**2*MZ**2) + (3*ee**4*sw**4*vev**2)/(4.*cw**4) + (ee**4*MH**4*sw**4*vev**2)/(16.*cw**4*MZ**4) - (ee**4*MH**2*sw**4*vev**2)/(4.*cw**4*MZ**2))*cmath.sqrt(MH**4 - 4*MH**2*MZ**2))/(32.*cmath.pi*abs(MH)**3)'})
 
-Decay_lwZ = Decay(name = 'Decay_lwZ',
-                  particle = P.lwZ,
-                  partial_widths = {(P.e__minus__,P.e__plus__):'(G**2*MlwZ**4)/(12.*cmath.pi*abs(MlwZ)**3)',
-                                    (P.lwe__minus__,P.lwe__plus__):'((8*G**2*Mlwe**2 + 4*G**2*MlwZ**2)*cmath.sqrt(-4*Mlwe**2*MlwZ**2 + MlwZ**4))/(48.*cmath.pi*abs(MlwZ)**3)'})
+Decay_lwe__minus__ = Decay(name = 'Decay_lwe__minus__',
+                           particle = P.lwe__minus__,
+                           partial_widths = {(P.Z,P.e__minus__):'((Mlwe**2 - MZ**2)*(0. + (3.1250000000000005e-12*ee**2*Mlwe**2)/cw**2 + (3.1250000000000005e-12*ee**2*Mlwe**4)/(cw**2*MZ**2) - (6.250000000000001e-12*ee**2*MZ**2)/cw**2))/(32.*cmath.pi*abs(Mlwe)**3)'})
 
 Decay_t = Decay(name = 'Decay_t',
                 particle = P.t,
@@ -47,7 +46,9 @@ Decay_Z = Decay(name = 'Decay_Z',
                                   (P.c,P.c__tilde__):'(MZ**2*(-(ee**2*MZ**2) + (3*cw**2*ee**2*MZ**2)/(2.*sw**2) + (17*ee**2*MZ**2*sw**2)/(6.*cw**2)))/(48.*cmath.pi*abs(MZ)**3)',
                                   (P.d,P.d__tilde__):'(MZ**2*(ee**2*MZ**2 + (3*cw**2*ee**2*MZ**2)/(2.*sw**2) + (5*ee**2*MZ**2*sw**2)/(6.*cw**2)))/(48.*cmath.pi*abs(MZ)**3)',
                                   (P.e__minus__,P.e__plus__):'(MZ**2*(-(ee**2*MZ**2) + (cw**2*ee**2*MZ**2)/(2.*sw**2) + (5*ee**2*MZ**2*sw**2)/(2.*cw**2)))/(48.*cmath.pi*abs(MZ)**3)',
-                                  (P.lwe__minus__,P.lwe__plus__):'((8*G**2*Mlwe**2 + 4*G**2*MZ**2)*cmath.sqrt(-4*Mlwe**2*MZ**2 + MZ**4))/(48.*cmath.pi*abs(MZ)**3)',
+                                  (P.e__minus__,P.lwe__plus__):'((-Mlwe**2 + MZ**2)*(0. - (3.1250000000000005e-12*ee**2*Mlwe**2)/cw**2 - (3.1250000000000005e-12*ee**2*Mlwe**4)/(cw**2*MZ**2) + (6.250000000000001e-12*ee**2*MZ**2)/cw**2))/(48.*cmath.pi*abs(MZ)**3)',
+                                  (P.lwe__minus__,P.e__plus__):'((-Mlwe**2 + MZ**2)*(0. - (3.1250000000000005e-12*ee**2*Mlwe**2)/cw**2 - (3.1250000000000005e-12*ee**2*Mlwe**4)/(cw**2*MZ**2) + (6.250000000000001e-12*ee**2*MZ**2)/cw**2))/(48.*cmath.pi*abs(MZ)**3)',
+                                  (P.lwe__minus__,P.lwe__plus__):'((0. - (0.5*ee**2*Mlwe**2)/cw**2 + (0.5*ee**2*MZ**2)/cw**2 + (8.*ee**2*Mlwe**2*sw2)/cw**2 - (2.*ee**2*MZ**2*sw2)/cw**2 - (16.*ee**2*Mlwe**2*sw2**2)/cw**2 + (4.*ee**2*MZ**2*sw2**2)/cw**2)*cmath.sqrt(-4*Mlwe**2*MZ**2 + MZ**4))/(48.*cmath.pi*abs(MZ)**3)',
                                   (P.mu__minus__,P.mu__plus__):'(MZ**2*(-(ee**2*MZ**2) + (cw**2*ee**2*MZ**2)/(2.*sw**2) + (5*ee**2*MZ**2*sw**2)/(2.*cw**2)))/(48.*cmath.pi*abs(MZ)**3)',
                                   (P.s,P.s__tilde__):'(MZ**2*(ee**2*MZ**2 + (3*cw**2*ee**2*MZ**2)/(2.*sw**2) + (5*ee**2*MZ**2*sw**2)/(6.*cw**2)))/(48.*cmath.pi*abs(MZ)**3)',
                                   (P.ta__minus__,P.ta__plus__):'((-5*ee**2*MTA**2 - ee**2*MZ**2 - (cw**2*ee**2*MTA**2)/(2.*sw**2) + (cw**2*ee**2*MZ**2)/(2.*sw**2) + (7*ee**2*MTA**2*sw**2)/(2.*cw**2) + (5*ee**2*MZ**2*sw**2)/(2.*cw**2))*cmath.sqrt(-4*MTA**2*MZ**2 + MZ**4))/(48.*cmath.pi*abs(MZ)**3)',

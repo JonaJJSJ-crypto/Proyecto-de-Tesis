@@ -1,12 +1,12 @@
 # This file was automatically created by FeynRules 2.3.47
 # Mathematica version: 12.1.1 for Microsoft Windows (64-bit) (June 19, 2020)
-# Date: Thu 3 Jun 2021 19:00:52
+# Date: Mon 7 Jun 2021 04:22:47
 
 
 # 
 # This is the logfile for the model Standard Model
 
-# Authors: N. Christensen, C. Duhr, B. Fuks
+# Authors: J.SA~\[DownExclamation]nchez
 # Model version: 1.4.7
 # Checking the Quantum numbers
    * Electric charge defined.
@@ -39,8 +39,8 @@
 
 # Vertices
    * Calling FeynmanRules for 1 Lagrangians.
-   * Number of classes vertices: 95
-   * Number of flavored vertices: 121
+   * Number of classes vertices: 96
+   * Number of flavored vertices: 122
    * Saved vertices in InterfaceRun[ 1 ].
    * Checked QNumber conservation.
       - Quantum number GhostNumber conserved in all vertices.
@@ -53,19 +53,19 @@
 # Vertex definitions
 #
 
-   * 124 vertices written.
+   * 122 vertices written.
    * vertices.py written.
 #
 # Lorentz structure definitions
 #
 
-   * 21 lorentz structures written.
+   * 22 lorentz structures written.
    * lorentz.py written.
 #
 # Coupling definitions
 #
 
-   * 72 couplings written.
+   * 70 couplings written.
    * couplings.py written.
 #
 # Coupling order definitions
@@ -77,7 +77,7 @@
 # Decay definitions
 #
 
-   * 6 decays written.
+   * 7 decays written.
    * decay.py not written
 #
 # CTCoupling definitions

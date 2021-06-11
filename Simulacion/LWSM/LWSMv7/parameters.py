@@ -1,6 +1,6 @@
 # This file was automatically created by FeynRules 2.3.47
 # Mathematica version: 12.1.1 for Microsoft Windows (64-bit) (June 19, 2020)
-# Date: Thu 3 Jun 2021 19:03:25
+# Date: Mon 7 Jun 2021 04:23:17
 
 
 
@@ -251,27 +251,27 @@ muH = Parameter(name = 'muH',
                 value = 'cmath.sqrt(lam*vev**2)',
                 texname = '\\mu')
 
-I1b33 = Parameter(name = 'I1b33',
+I1a33 = Parameter(name = 'I1a33',
                   nature = 'internal',
                   type = 'complex',
                   value = 'yb',
-                  texname = '\\text{I1b33}')
+                  texname = '\\text{I1a33}')
 
-I2b33 = Parameter(name = 'I2b33',
+I2a33 = Parameter(name = 'I2a33',
                   nature = 'internal',
                   type = 'complex',
                   value = 'yt',
-                  texname = '\\text{I2b33}')
+                  texname = '\\text{I2a33}')
 
-I3b33 = Parameter(name = 'I3b33',
+I3a33 = Parameter(name = 'I3a33',
                   nature = 'internal',
                   type = 'complex',
                   value = 'yt',
-                  texname = '\\text{I3b33}')
+                  texname = '\\text{I3a33}')
 
-I4b33 = Parameter(name = 'I4b33',
+I4a33 = Parameter(name = 'I4a33',
                   nature = 'internal',
                   type = 'complex',
                   value = 'yb',
-                  texname = '\\text{I4b33}')
+                  texname = '\\text{I4a33}')
 
