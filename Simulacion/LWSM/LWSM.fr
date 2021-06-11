@@ -1414,7 +1414,7 @@ V[5] == {
 
 
 
-	Mass -> {Mlwe, 400},
+	Mass -> {Mlwe, 200},
 
 
 
@@ -3058,11 +3058,11 @@ LLW := -Z[mu] (-0.5+sw2)*ee/cw lwebar.Ga[mu].ProjM.lwe +
 
 
 
-	(Z[mu]) (0.5)*ee/cw ((0.0005/200) ebar.Ga[mu].ProjM.lwe + (0.0005/200)lwebar.Ga[mu].ProjM.e
+	(Z[mu]) (0.5)*ee/cw ((Me/Mlwe) ebar.Ga[mu].ProjM.lwe + (Me/Mlwe)lwebar.Ga[mu].ProjM.e
 
 
 
-	- (0.0005/200) ebar.Ga[mu].ProjP.lwe - (0.0005/200) lwebar.Ga[mu].ProjP.e) ;
+	- (Me/Mlwe) ebar.Ga[mu].ProjP.lwe - (Me/Mlwe) lwebar.Ga[mu].ProjP.e) ;
 
 
 
