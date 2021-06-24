@@ -1418,7 +1418,7 @@ V[5] == {
 
 
 
-        Width -> 0,
+        Width -> {Wlw, Auto},
 
 
 
@@ -1446,7 +1446,7 @@ V[5] == {
 
 
 
-        PDG -> 555,
+        PDG -> 556,
 
 
 
@@ -2384,7 +2384,12 @@ M$Parameters = {
 
   (* Internal Parameters *)
 
-
+  Epslwe == {
+    ParameterType -> Internal,
+    Value -> Me/Mlwe,
+    Tex -> me/Mlwe,
+    Description -> "Coupling for me/Mlwe"
+    },
 
   aEW == {
 
@@ -3050,19 +3055,19 @@ LGhost := Block[{LGh1,LGhw,LGhs,LGhphi,mu, generators,gh,ghbar,Vectorize,phi1,ph
 
 
 
-LLW := -Z[mu] (-0.5+sw2)*ee/cw lwebar.Ga[mu].ProjM.lwe +
+LLW := Z[mu] (-0.5+sw*sw)*ee/cw/sw lwebar.Ga[mu].ProjM.lwe +
 
 
 
-	Z[mu] (sw2)*ee/cw lwebar.Ga[mu].ProjP.lwe - 
+	Z[mu] (sw)*ee/cw lwebar.Ga[mu].ProjP.lwe + 
 
 
 
-	(Z[mu]) (0.5)*ee/cw ((Me/Mlwe) ebar.Ga[mu].ProjM.lwe + (Me/Mlwe)lwebar.Ga[mu].ProjM.e
+	(Z[mu]) (0.5)*ee/cw/sw*5/200 (ebar.Ga[mu].ProjM.lwe + lwebar.Ga[mu].ProjM.e
 
 
 
-	- (Me/Mlwe) ebar.Ga[mu].ProjP.lwe - (Me/Mlwe) lwebar.Ga[mu].ProjP.e) ;
+	- ebar.Ga[mu].ProjP.lwe - lwebar.Ga[mu].ProjP.e) ;
 
 
 

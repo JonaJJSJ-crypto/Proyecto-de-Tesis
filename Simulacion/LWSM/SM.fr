@@ -2,7 +2,7 @@
 (******                       This is the FeynRules mod-file for the Standard model                       ******)
 (******                                                                                                   ******)
 (******     Authors: N. Christensen, C. Duhr, B. Fuks                                                     ******)
-(******           Moded by J. Sánchez                                                                     ******)
+(******                                                                                                   ******)
 (****** Choose whether Feynman gauge is desired.                                                          ******)
 (****** If set to False, unitary gauge is assumed.                                                          ****)
 (****** Feynman gauge is especially useful for CalcHEP/CompHEP where the calculation is 10-100 times faster. ***)
@@ -15,12 +15,12 @@
 M$ModelName = "Standard Model";
 
 M$Information = {
-  Authors      -> {"J.Sánchez"}, 
-  Version      -> "1.4.7",
-  Date         -> "28. 09. 2016",
-  Institutions -> {"Universidad San Francisco de Quito"},
+  Authors      -> {"J. Sánchez[}, 
+  Version      -> "0.5",
+  Date         -> "05. 06. 2021",
+  Institutions -> {"USFQ"},
   Emails       -> {"jjsanchezj@estud.usfq.edu.ec"},
-  URLs         -> "Pending"
+  URLs         -> "None"
 };
 
 FeynmanGauge = True;
@@ -174,18 +174,6 @@ M$ClassesDescription = {
     PropagatorArrow  -> None,
     FullName         -> "G"
   },
-V[5] == {
-	ClassName -> lwZ,
-	SelfConjugate -> True,
-	Indices -> {},
-	Mass -> {MlwZ, 91.1876},
-        Width -> {WlwZ, 2.4952},
-	PropagatorLabel -> "lwZ",
-	PropagatorType -> Sine,
-	PropagatorArrow -> None,
-        PDG -> 230,
-        FullName -> "lwZ" },
-
 (* Ghosts: related to physical gauge bosons *)
   U[1] == { 
     ClassName       -> ghA, 
@@ -761,11 +749,11 @@ LGhost := Block[{LGh1,LGhw,LGhs,LGhphi,mu, generators,gh,ghbar,Vectorize,phi1,ph
   togoldstones := {phi1 -> (GP + GPbar)/Sqrt[2], phi2 -> (-GP + GPbar)/(I Sqrt[2])};
   LGhphi=Plus@@Flatten[Table[-ghbar[[kkk]].gh[[lll]] Vectorize[generators[[kkk]].doublet0].Vectorize[generators[[lll]].(doublet+doublet0)],{kkk,4},{lll,4}]] /.togoldstones;
 
-LLW := -Z[mu] ee/cw*(-0.5+sw2) ProjM.lwebar.Ga[mu].ProjM.lwe+
-	Z[mu] ee/cw*(sw2) ProjP.lwebar.Ga[mu].ProjP.lwe-
-	(Z[mu]) ee/cw*(0.5) ((Me/200) ebar.Ga[mu].ProjM.lwe + (Me/200)lwebar.Ga[mu].ProjM.e
-	- (Me/200) ebar.Ga[mu].ProjP.lwe - (Me/200) lwebar.Ga[mu].ProjP.e) ;
+(*LLW := -Z[mu] (-0.5+sw2) ProjM.lwebar.Ga[mu].ProjM.lwe -*)
+(*	Z[mu] (sw2) ProjP.lwebar.Ga[mu].ProjP.lwe +*)
+(*	Z[mu] 0.5*Me/200 ebar.Ga[mu].ProjM.lwe + Z[mu] 0.5*Me/200 lwebar.Ga[mu].ProjM.e*)
+(*	- Z[mu] 0.5*Me/200 ebar.Ga[mu].ProjP.lwe - Z[mu] 0.5*Me/200 lwebar.Ga[mu].ProjP.e ;*)
 
 ExpandIndices[ LGhs + If[FeynmanGauge, LGh1 + LGhw + LGhphi,0], FlavorExpand->SU2W]];
 
-LSM:= LGauge + LFermions + LHiggs + LYukawa + LGhost + LLW;
+LSM:= LGauge + LFermions + LHiggs + LYukawa + LGhost ;
