@@ -5,8 +5,21 @@ import FWCore.Utilities.FileUtils as FileUtils
 process = cms.Process("acausal")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+#Print tree
+process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.printTree = cms.EDAnalyzer("ParticleTreeDrawer",
+                                   src = cms.InputTag("genParticles"),                                                                 
+                                   printP4 = cms.untracked.bool(False),
+                                   printPtEtaPhi = cms.untracked.bool(False),
+                                   printVertex = cms.untracked.bool(True),
+                                   printStatus = cms.untracked.bool(False),
+                                   printIndex = cms.untracked.bool(False),
+                                   status = cms.untracked.vint32( 3 )
+                                   )
+
+#
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 #Data files
 #files = FileUtils.loadListFromFile("data/CMS_Run2011A_DoubleElectron_AOD_12Oct2013-v1_20000_file_index.txt")
@@ -28,7 +41,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
-        'file:data/DoubleEle.root'
+        'file:data/reco.root'
     )
 )
 
@@ -42,7 +55,7 @@ process.GlobalTag.globaltag = 'FT_53_LV5_AN1::All'
 #inspired by https://github.com/cms-sw/cmssw/blob/CMSSW_5_3_X/HLTrigger/HLTfilters/interface/HLTHighLevel.h
 
 process.acausal = cms.EDAnalyzer('AcausalAnalyzer',
-                       isData = cms.bool(True),
+                       isData = cms.bool(False),
                        processName = cms.string("HLT"),
                        triggerPatterns = cms.vstring("HLT_DoubleEle45_CaloIdL_v*"), #if left empty, all triggers will run        
                        triggerResults = cms.InputTag("TriggerResults","","HLT"),
@@ -50,4 +63,4 @@ process.acausal = cms.EDAnalyzer('AcausalAnalyzer',
                        tracks = cms.untracked.InputTag('generalTracks')
                        )
 
-process.p = cms.Path(process.acausal)
+process.p = cms.Path(process.acausal * process.printTree)

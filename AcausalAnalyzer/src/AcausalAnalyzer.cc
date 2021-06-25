@@ -433,7 +433,7 @@ for(TrackCollection::const_iterator itTrack = tracks->begin();
     if(itTrack->pt() > 5)
     {
     	cout<<"vert "<<itTrack->pt()<<endl;
-	trk_pt[trackc]=itTrack->pt();    
+	//trk_pt[]=itTrack->pt();    
     }
 	trackc++;  
 }
@@ -732,6 +732,7 @@ i++;
     for (auto it = gens->begin(); it != gens->end(); it++) {
       const auto status = it->status();
       const auto pdgId = std::abs(it->pdgId());
+      cout<<"status "<<status<<" pdgId "<<pdgId<<endl;
       if (status == 1 && pdgId == 13) { // muon
         interestingGenParticles.emplace_back(*it);
       }
