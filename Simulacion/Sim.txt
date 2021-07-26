@@ -1,10 +1,23 @@
 Here will be the simulation:
 
-This simulations has one lw term mixing for electrons in the lagrangian using FeynRules.
+This simulations has one lw term mixing for electrons in the lagrangian using FeynRules. This is to Files located in the LWSM directory
+Calculating FeynRules and producing UFO files
+ 1.First you have to introduce the aditional lagrangian terms in the "LWSM.fr" file using the eigen vector from the Mixing matrix proposed by Alvares et.al. I have chosen the mixing terms only containing the Doublet lw partner with the Doublet electron. In the File you can find all the new terms added with the prefix "LW".
+ 2.In order to introduce the Lagrangian you first have to declare all the new particles and interactions. Since im only Adding "lwe", I had copy all the characteristics in the Electron Besides. Then change the Mass and other labels as desired and set the width to "Auto". 
+ 3.Then Write the lagrangian aditional terms that, as you may notice, has some hard-coded terms such a coupling constants. I recomend this because declaring new coupling constants may cause problems in the Madgraph simulation step. This is since all terms must have a Hierarchy well defined in the UFO files, yet I just dont wanted to deal with this. This is tricky since couplingconstants are dependent of the mass and everytime you have to change this value you have to change every single term by hand, but it works just fine.
+ 3.Then open with mathematica the file LWSM.nb and run thw initialyzatiion rutine becareful to set the path to the correct files, and add the model file "LWSM.fr"
+ 4. Then calculate the Feyman Rules for this Model Using ("WriteUFO[LSM, AddDecays -> True, Output -> "LWSM200DnR"]")(D is refered as AddDecaysTrue and nD the opossite) (R is refered to Reescaling in the Z->lwe+lwe- coupling constant nR is the oposite) those settings will be important when running in madgraph
+Calculating HardProcess using Madgraph
+ 1.just paste the UFO folder into Madgraph model directory. 
+ 2. Run madgraph ./bin/mg5_aMc
+ 3. In madgraph interface import the model by the UFO name (>import model LWSM200DnR)
+ 4.Generate the process Be very careful defining what is your hard process and what is not. (>generate p p > lwe+ lwe-)
+ 5.Write the Directory for the process (>output LWSMDnR !or any name that u want 2)
+ 6.Dont launch the process (>exit)
+ 7.GO tho you process directory Alocated in Madgraph main directory and open you paramCard in the Cards directory. change to Auto all widths related to your decay (Z,Electron,lwe+-). this step can be omited by editing the Carnd in by (>launch) instead od step 6 and edit the param card in the terminal
+ 8. ./bin/generate_events to run madgraph calculation interface. here you will be guided by which subroutines you may want to do. And afeter you will be show your cards, Edit as please. ParamaCard is realted to particles properties and RunCard to the experiment properties. Pythia card Will be discussed in next section.
+ 9. Once finished the calculations you may find the .lhe file need for next step
+ Showering particles with pythia
  
- 1.Using the eigen vector from the Mixing matrix proposed by Alvares et.al. I have chosen the mixing terms only containing the Doublet lw partner with the Doublet electron
- 2.In the File SM.fr there has been defined the lwZ boson partner and the lwe partner for electron. 
- 3.The lagrangian term consist of mixing described in Alvarez et.al. B1 and Table.II
- 4. There been calculated the Feyman Rules for this Model Using ("WriteUFO[LSM, AddDecays -> True, Output -> "LWSMv2"]")
- 
+  
  Insert LWSM folder int he models folder in Feynrules for proper calculations
