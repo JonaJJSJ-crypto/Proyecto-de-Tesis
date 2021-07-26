@@ -17,7 +17,7 @@ Calculating HardProcess using Madgraph
  7.GO tho you process directory Alocated in Madgraph main directory and open you paramCard in the Cards directory. change to Auto all widths related to your decay (Z,Electron,lwe+-). this step can be omited by editing the Carnd in by (>launch) instead od step 6 and edit the param card in the terminal
  8. ./bin/generate_events to run madgraph calculation interface. here you will be guided by which subroutines you may want to do. And afeter you will be show your cards, Edit as please. ParamaCard is realted to particles properties and RunCard to the experiment properties. Pythia card Will be discussed in next section.
  9. Once finished the calculations you may find the .lhe file need for next step
- Showering particles with pythia
+Showering particles with pythia(!!!!!!!!!!!!!!!!!!!IN-WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
  
   
  Insert LWSM folder int he models folder in Feynrules for proper calculations
