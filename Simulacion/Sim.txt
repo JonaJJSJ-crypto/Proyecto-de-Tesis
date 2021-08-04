@@ -19,5 +19,6 @@ Calculating HardProcess using Madgraph
  9. Once finished the calculations you may find the .lhe file need for next step
 Showering particles with pythia(!!!!!!!!!!!!!!!!!!!IN-WORK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
  
-  
+ Detailed apendix: https://www.overleaf.com/8447484168prjxsxvptptd
+ 
  Insert LWSM folder int he models folder in Feynrules for proper calculations
