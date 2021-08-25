@@ -83,12 +83,17 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
     PythiaParameters = cms.PSet(
         processParameters = cms.vstring('Tune:pp 5', 
             'PDF:pSet = 5'),
-        pythiaMyParameters = cms.vstring('556:new = lwe- lwe+ 2 -3 0 200.0 0.0 200.0 200.0 2.70765e-02',
-                                         '556:isResonance=off',
-                                         '556:isVisible=off',
-                                         '556:addChannel= 1 1.0 100 23 -11'),
-        parameterSets = cms.vstring('processParameters',
+        pythiaMyParameters = cms.vstring(
+         '556:new = lwe- lwe+ 2 -3 0 200.0 0.0 200.0 200.0 2.70765e-02',
+         '556:isResonance=off',
+         '556:isVisible=off',
+         '556:addChannel= 1 1.0 100 23 11',
+         '23:isResonance=off'
+        ),
+
+	    parameterSets = cms.vstring('processParameters',
                                     'pythiaMyParameters')
+        
     ),
 )
 
