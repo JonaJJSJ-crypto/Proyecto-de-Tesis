@@ -1,0 +1,7 @@
+Command lines in cmssw5.3.*
+*gensim
+cmsDriver.py SimLW/Sim/python/myHadronizer.py --step GEN,SIM --datatier GEN-SIM --conditions START53_V27::All --beamspot Realistic8TeVCollision --customise Configuration/DataProcessing/Utils.addMonitoring --fileout gensimLW.root --eventcontent RAWSIM --no_exec --filein file:LWSM200DnR.lhe --filetype LHE --number=10 --python_filename gensimLW.py --mc
+*hlt
+cmsDriver.py step1 --filein file:gensimLW.root --fileout hltLW.root --pileup_input root://eospublic.cern.ch//eos/opendata/cms/MonteCarlo2012/Summer12/MinBias_TuneZ2star_8TeV-pythia6/GEN-SIM/START50_V13-v3/0002/FEF2F4CC-0E6A-E111-96F6-0030487F1C57.root --pileup 2012_Summer_50ns_PoissonOOTPU --datatier GEN-SIM-RAW --conditions START53_V27::All --step DIGI,L1,DIGI2RAW,HLT:7E33v2 --mc --eventcontent RAWSIM --python_filename hltLW.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring -n 10 --runsScenarioForMC Run2012_AB_C_D_oneRunPerEra
+*reco
+cmsDriver.py step2 --filein file:hltLW.root --fileout recoLW.root --mc --eventcontent AODSIM,DQM --datatier AODSIM,DQM --conditions START53_V27::All --step RAW2DIGI,L1Reco,RECO,VALIDATION:validation_prod,DQM:DQMOfflinePOGMC --python_filename recoLW.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring -n 10
