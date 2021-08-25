@@ -1,1 +1,8 @@
+In Madgraph interface:
 
+>import model LWSM/
+>generate p p > lwe+ lwe-
+>output LWSMDnR
+>launch
+
+make sure you fix the correct energies in run_card and set to auto the decays for lwe in param_card
