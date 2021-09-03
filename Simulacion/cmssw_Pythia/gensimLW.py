@@ -77,7 +77,6 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
     pythiaPylistVerbosity = cms.untracked.int32(1),
     filterEfficiency = cms.untracked.double(1.0),
     pythiaHepMCVerbosity = cms.untracked.bool(True),
-    SLHAFileForPythia8 = cms.string('SimLW/Sim/param_card.slha'),
     comEnergy = cms.double(8000.0),
     UseExternalGenerators = cms.untracked.bool(True),
     PythiaParameters = cms.PSet(
