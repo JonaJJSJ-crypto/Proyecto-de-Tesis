@@ -17,7 +17,12 @@ generator = cms.EDFilter("Pythia8HadronizerFilter",
          '556:isResonance=off',
          '556:isVisible=off',
          '556:addChannel= 1 1.0 100 23 11',
-         '23:isResonance=off'
+         '23:isResonance=off',
+	 '23:oneChannel= 1   0.1540492    0        1	   -1',
+         '23:addChannel= 1   0.1194935    0        2	   -2',
+         '23:addChannel= 1   0.1540386    0        3	   -3',
+         '23:addChannel= 1   0.1193325    0        4	   -4',
+         '23:addChannel= 1   0.1523269    0        5	   -5'
         ),
 
 	    parameterSets = cms.vstring('processParameters',
